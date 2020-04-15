@@ -16,11 +16,28 @@ Customer want to deployment Solr Cloud on AWS EC2 ask AWS to provide benchmark d
 
 [EBS RAID configuration](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/raid-config.html)
 
+For example, two 500 GiB Amazon EBS io1 volumes with 4,000 provisioned IOPS each will create a 1000 GiB RAID 0 array with an available bandwidth of 8,000 IOPS and 1,000 MB/s of throughput.
+
 Creating a RAID 0 array allows you to achieve a higher level of performance for a file system than you can provision on a single Amazon EBS volume. A RAID 1 array offers a "mirror" of your data for extra redundancy.
 
 RAID 5 and RAID 6 are not recommended for Amazon EBS because the parity write operations of these RAID modes consume some of the IOPS available to your volumes. 
 
 You can creat a RAID array with hight volumes such as (we recommend 6 volumes), which offers a high level of performance. But for this customer case testing, 4 volumes RAID will used. 
+
+**注意**
+1. Raid0和Instance store对于数据持久性都有局限，需要通过定期备份到S3。考虑到Solr Cloud分布式特性以及对于IOPS的要求，因此可以使用。
+2. 如果由于实例的IOPS和吞吐有上限，因此需要更大IOPS和吞吐，需要开更大的机型，相应的机器性能更好。
+3. 如果想不改变单盘的IOPS提升总体IOPS，这个需要做raid，但是带来的问题也是`Performance of the stripe is limited to the worst performing volume in the set` 以及 `Loss of a single volume results in a complete data loss for the array`。
+比如要40000的IOPS，可以raid 4块 10000IOPS的盘；也可以不做raid，然后直接1块或者多块 40000IOPS的盘
+4. GP2是突增类型，注意credit。
+The following table compares the common RAID 0 and RAID 1 options.
+5. Raid0和Raid1的选择
+
+| Configuration | Use Advantages |  Disadvantages |
+| :------ | :------ | :------|
+|RAID 0 | When I/O performance is more important than fault tolerance;  for example data replication is already set up separately | I/O is distributed across the volumes in a stripe. If you add a volume, you get the straight addition of throughput and IOPS | Performance of the stripe is limited to the worst performing volume in the set. Loss of a single volume results in a complete data loss for the array. |
+| RAID 1 | When fault tolerance is more important than I/O performance; for example, as in a critical application. | Safer from the standpoint of data durability. | Does not provide a write performance improvement; requires more Amazon EC2 to Amazon EBS bandwidth than non-RAID configurations because the data is written to multiple volumes simultaneously. |
+
 
 ## Test case
 1. Raid0 on instance storage for different instance type
