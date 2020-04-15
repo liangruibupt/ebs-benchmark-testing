@@ -30,8 +30,8 @@ You can creat a RAID array with hight volumes such as (we recommend 6 volumes), 
 3. 如果想不改变单盘的IOPS提升总体IOPS，这个需要做raid，但是带来的问题也是`Performance of the stripe is limited to the worst performing volume in the set` 以及 `Loss of a single volume results in a complete data loss for the array`。
 比如要40000的IOPS，可以raid 4块 10000IOPS的盘；也可以不做raid，然后直接1块或者多块 40000IOPS的盘
 4. GP2是突增类型，注意credit。
-The following table compares the common RAID 0 and RAID 1 options.
 5. Raid0和Raid1的选择
+The following table compares the common RAID 0 and RAID 1 options.
 
 | Configuration | Use Advantages |  Disadvantages |
 | :------ | :------ | :------|
