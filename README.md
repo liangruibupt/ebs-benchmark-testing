@@ -11,7 +11,8 @@ Customer want to deployment Solr Cloud on AWS EC2 ask AWS to provide benchmark d
 4. Configure and mount the block device.
 5. Install a tool to benchmark I/O performance.
 6. Benchmark the I/O performance of your volumes.
-7. Delete your volumes and terminate your instance.
+7. Watch the cloudwatch metrics
+8. Delete your volumes and terminate your instance.
 
 [EBS RAID configuration](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/raid-config.html)
 
